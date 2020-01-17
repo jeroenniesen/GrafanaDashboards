@@ -1,0 +1,277 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 1,
+  "links": [],
+  "panels": [
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "description": "Security alerts over time",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 23,
+        "x": 0,
+        "y": 0
+      },
+      "hiddenSeries": false,
+      "id": 4,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "appInsights": {
+            "dimension": "none",
+            "metricName": "select",
+            "rawQuery": false,
+            "rawQueryString": "",
+            "timeColumn": "timestamp",
+            "timeGrain": "auto",
+            "valueColumn": ""
+          },
+          "azureLogAnalytics": {
+            "query": "SecurityAlert \n| where $__timeFilter(TimeGenerated)\n| make-series value=count() default=0\n    on TimeGenerated  \n    from (datetime(1970-01-01) + $__from * 1ms)\n    to (datetime(1970-01-01) + $__to * 1ms)\n    step 1h    \n    by ProviderName \n| mv-expand TimeGenerated to typeof(datetime), value to typeof(int)\n| order by TimeGenerated, ProviderName asc",
+            "resultFormat": "time_series",
+            "workspace": "{workspace id}"
+          },
+          "azureMonitor": {
+            "aggOptions": [],
+            "dimensionFilter": "*",
+            "metricDefinition": "select",
+            "metricName": "select",
+            "metricNamespace": "select",
+            "resourceGroup": "select",
+            "resourceName": "select",
+            "timeGrain": "auto",
+            "timeGrains": [],
+            "top": "10"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A",
+          "subscription": "b4824877-0da7-4d92-80e5-e186f01b0653"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Security alerts over time",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fill": 2,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 23,
+        "x": 0,
+        "y": 8
+      },
+      "hiddenSeries": false,
+      "id": 2,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 2,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "appInsights": {
+            "dimension": "none",
+            "metricName": "select",
+            "rawQuery": false,
+            "rawQueryString": "",
+            "timeColumn": "timestamp",
+            "timeGrain": "auto",
+            "valueColumn": ""
+          },
+          "azureLogAnalytics": {
+            "query": "SigninLogs \n| where $__timeFilter(TimeGenerated)\n     and (ConditionalAccessStatus contains \"success\"\n         or \n          ConditionalAccessStatus contains \"fail\"\n         )\n| make-series value=count() default=0\n    on TimeGenerated  \n    from (datetime(1970-01-01) + $__from * 1ms)\n    to (datetime(1970-01-01) + $__to * 1ms)\n    step 1h    \n    by ConditionalAccessStatus \n| mv-expand TimeGenerated to typeof(datetime), value to typeof(int)\n| order by TimeGenerated asc, ConditionalAccessStatus asc",
+            "resultFormat": "time_series",
+            "workspace": "{workspace id}"
+          },
+          "azureMonitor": {
+            "aggOptions": [],
+            "dimensionFilter": "*",
+            "metricDefinition": "select",
+            "metricName": "select",
+            "metricNamespace": "select",
+            "resourceGroup": "select",
+            "resourceName": "select",
+            "timeGrain": "auto",
+            "timeGrains": [],
+            "top": "10"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A",
+          "subscription": "b4824877-0da7-4d92-80e5-e186f01b0653"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Sign-in attempts over time ",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    }
+  ],
+  "schemaVersion": 21,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "",
+  "title": "Security Dashboard",
+  "uid": "HwyqArPZz",
+  "version": 3
+}
